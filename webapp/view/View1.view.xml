@@ -1,0 +1,22 @@
+<mvc:View
+    controllerName="ui5.futureview.ui5chess2.controller.View1"
+    xmlns:mvc="sap.ui.core.mvc"
+    displayBlock="true"
+    xmlns="sap.m"
+>
+    <Page
+        id="page"
+        title="{i18n>title}"
+    >
+        <content>
+            <!-- <HBox id="board" class="chessBoard"> -->
+            <HBox
+                id="board"
+                class="chessBoard"
+                backgroundDesign="Solid"
+                direction="Row"
+                wrap="Wrap"
+            />
+        </content>
+    </Page>
+</mvc:View>
