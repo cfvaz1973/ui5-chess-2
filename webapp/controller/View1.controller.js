@@ -67,8 +67,8 @@ sap.ui.define([
                     // create piece within square
                     let sPieceImage = piece_url[board[i]]; 
                     let sImagePath = '../img/' + sPieceImage;
-                    //let pieceId = 'piece';
-                    let oPiece = new Image({ src: sImagePath, width:"50px", height:"50px" });
+                    let pieceId = 'piece';
+                    let oPiece = new Image({ src: sImagePath, width:"50px", height:"50px" }).addStyleClass("piece");
                     oSquare.addItem(oPiece);
                     oBoard.addItem(oSquare);
                 }
@@ -128,6 +128,14 @@ sap.ui.define([
 
             },
             onAfterRendering: function () {
+                const pieces = document.getElementsByClassName("piece");
+                for (let i = 0; i < pieces.length; i++) {
+                    //pieces[i].addEventListener("dragstart", drag);
+                    pieces[i].setAttribute("draggable", true);
+                    //pieces[i].id = pieces[i].className.split(" ")[1] + pieces[i].parentElement.id;
+                }
+
+
                 // alert('onBeforeRendering');
                 // console.log('onBeforeRendering');
                 // var oChessBoard = new HBox("board",{}).addStyleClass ("chessBoard");                
