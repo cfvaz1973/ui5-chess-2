@@ -9,10 +9,10 @@
 
 .chessBoard {
     /*visibility: hidden;*/
-    /* width: 80vw;
-    height: 80vw; */
-    width: 400px;
-    height: 400px;
+    width: 20vw;
+    height: 20vw; 
+    /* width: 400px;
+    height: 400px; */
     margin:0 auto;
     display: flex;
     flex-wrap: wrap;
@@ -21,10 +21,10 @@
 
 .square {
     /* visibility: hidden; */
-    /* width: 12.5%;
-    height: 12.5%; */
-    width: 50px;
-    height: 50px;
+    width: 12.5%;
+    height: 12.5%;
+    /* width: 50px;
+    height: 50px; */
     float: left;
     display: flex;
     justify-content: center;
@@ -41,4 +41,33 @@
 .black {
     /*visibility: hidden;*/
     background-color: #b58863;
+}
+
+.square div {
+    /* visibility: hidden; */
+    width: 100%;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.piece {
+    /* visibility: hidden; */
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+}
+
+/* When the device's screen size is bigger than or equal to 600 pixels,
+   the chess board will be 600 pixels wide and 600 pixels tall */
+/* @media (min-width:600px) {
+    .chessBoard {
+        width: 600px;
+        height: 600px;
+    }
+} */
+
+@media (max-width:600px) {
+    .coordinate {
+        font-size: 8px;
+    }
 }

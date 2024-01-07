@@ -7,7 +7,7 @@ sap.ui.define(
   
       return BaseController.extend("ui5.futureview.ui5chess2.controller.App", {
         onInit: function() {
-          
+          console.log('App.controller.js init');
         }
       });
     }
