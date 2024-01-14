@@ -1,185 +1,52 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/m/HBox",
-    "sap/m/Image"
+    "sap/m/Image",
+    "ui5/futureview/ui5chess2/model/Chessboard"
 ],
     /**
      * @param {typeof sap.ui.core.mvc.Controller} Controller
      */
-    function (Controller, HBox, Image) {
+    function (Controller, HBox, Image, Chessboard) {
         "use strict";
 
         return Controller.extend("ui5.futureview.ui5chess2.controller.View1", {
 
             onInit: function () {
 
-                console.log('View1.controller.js init');
+                this.boards = [];
 
-                const piece = {
-                    none: 0,
-                    king: 1,
-                    pawn: 2,
-                    knight: 3,
-                    bishop: 4,
-                    rook: 5,
-                    queen: 6,
-                    white: 8,
-                    black: 16
-                };
-
-                const map_piece = {
-                    'k': piece.king,
-                    'p': piece.pawn,
-                    'n': piece.knight,
-                    'b': piece.bishop,
-                    'r': piece.rook,
-                    'q': piece.queen
+                for (let i = 1; i <= 2; i++) {
+                    let sBoardId = `board${i}`;
+                    var board = new Chessboard(sBoardId, {
+                        position: 'start',
+                        showNotation: true, orientation: 'white',
+                        draggable: true
+                    });
+                    var obj = { "id": sBoardId,
+                                "board": board };
+                    this.boards.push(obj);
                 }
 
-                const piece_url = {
-                    'k': 'Black_King.png',
-                    'p': 'Black_Pawn.png',
-                    'n': 'Black_Knight.png',
-                    'b': 'Black_Bishop.png',
-                    'r': 'Black_Rook.png',
-                    'q': 'Black_Queen.png',
-                    'K': 'White_King.png',
-                    'P': 'White_Pawn.png',
-                    'N': 'White_Knight.png',
-                    'B': 'White_Bishop.png',
-                    'R': 'White_Rook.png',
-                    'Q': 'White_Queen.png',
-                }
+                // //this.boards[0].sBoardId.draw(this);
+                this.boards[0].board.draw(this);
+                this.boards[1].board.draw(this);
 
-                const fen = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
-                const board = fenToArray(fen);
-                const board_2 = loadPositionFromFen(fen);
-                console.log("Board", board);
-                console.log("Board_2", board_2);
-                //console.log("attribute", attribute);
+                // this.board1 = new Chessboard('board1', {
+                //     position: 'start',
+                //     showNotation: true, orientation: 'white',
+                //     draggable: true
+                // });
 
+                // this.board1.draw(this);
 
-                var that = this;
+                // this.board2 = new Chessboard('board2', {
+                //     position: 'start',
+                //     showNotation: true, orientation: 'white',
+                //     draggable: true
+                // });
 
-                var board1 = createBoard('board1');
-                var board2 = createBoard('board2');
-                var board3 = createBoard('board3');
-
-                function createBoard(id) {
-                    var boardId = that.createId(id);
-                    var oBoard = that.byId(boardId);
-                    for (let i = 0; i < board.length; i++) {
-                        let oCoords = getPositionCoords(i);
-                        let squareId = boardId + oCoords.col + oCoords.row;
-                        // create square
-                        let sSquareClass = 'square' + ' ' + oCoords.color;
-                        let oSquare = new HBox(squareId, {}).addStyleClass(sSquareClass);
-                        // create piece within square
-                        let sPieceImage = piece_url[board[i]];
-                        let sImagePath = '../img/' + sPieceImage;
-                        let pieceId = 'piece';
-                        let oPiece = new Image({ src: sImagePath }).addStyleClass("piece");
-                        oSquare.addItem(oPiece);
-                        oBoard.addItem(oSquare);
-                    }
-                    return oBoard;
-                }
-
-
-
-                // var boardId = this.createId('board1');
-
-                // var oBoard = this.byId(boardId);
-
-                // for (let i = 0; i < board.length; i++) {
-                //     let oCoords = getPositionCoords(i);
-                //     let squareId = boardId + oCoords.col + oCoords.row;
-                //     // create square
-                //     let sSquareClass = 'square' + ' ' + oCoords.color;
-                //     let oSquare = new HBox(squareId, {}).addStyleClass(sSquareClass);
-                //     // create piece within square
-                //     let sPieceImage = piece_url[board[i]];
-                //     let sImagePath = '../img/' + sPieceImage;
-                //     let pieceId = 'piece';
-                //     let oPiece = new Image({ src: sImagePath }).addStyleClass("piece");
-                //     oSquare.addItem(oPiece);
-                //     oBoard.addItem(oSquare);
-                // }
-
-                // boardId = this.createId('board2');
-
-                // oBoard = this.byId(boardId);
-
-                // for (let i = 0; i < board.length; i++) {
-                //     let oCoords = getPositionCoords(i);
-                //     let squareId = boardId + oCoords.col + oCoords.row;
-                //     // create square
-                //     let sSquareClass = 'square' + ' ' + oCoords.color;
-                //     let oSquare = new HBox(squareId, {}).addStyleClass(sSquareClass);
-                //     // create piece within square
-                //     let sPieceImage = piece_url[board[i]];
-                //     let sImagePath = '../img/' + sPieceImage;
-                //     let pieceId = 'piece';
-                //     let oPiece = new Image({ src: sImagePath }).addStyleClass("piece");
-                //     oSquare.addItem(oPiece);
-                //     oBoard.addItem(oSquare);
-                // }
-
-
-
-                function getPositionCoords(i) {
-                    // get row and col
-                    let row = Math.floor(i / 8) + 1;
-                    let col = String.fromCharCode(97 + (i % 8));
-
-                    // get square color
-                    let mod = i % 2;
-                    let div = Math.floor(i / 8) % 2;
-                    let color = mod === div ? "white" : "black";
-
-                    // return full object
-                    return { "row": row, "col": col, "color": color };
-                }
-
-                function fenToArray(fen) {
-                    const piecesString = fen.split(' ')[0].replace(/\//g, '');
-                    const piecesArrayNums = piecesString.split('');
-                    const piecesArray = piecesArrayNums.map(piece => {
-                        if (parseInt(piece)) {
-                            return [...Array(parseInt(piece)).fill(null)];
-                        }
-                        return piece;
-                    }).flat();
-                    return piecesArray;
-                }
-
-                function loadPositionFromFen(fen) {
-                    let file = 0;
-                    let rank = 7;
-                    let board = [];
-
-                    for (let symbol of fen) {
-                        if (symbol == '/') {
-                            file = 0;
-                            rank--;
-                        } else {
-                            if (parseInt(symbol)) {
-                                file += parseInt(symbol);
-                            } else {
-                                let pieceColour = isUppercase(symbol) ? piece.white : piece.black;
-                                let pieceType = map_piece[symbol.toLowerCase()];
-                                board[rank * 8 + file] = pieceType | pieceColour;
-                                file++;
-                            }
-                        }
-                    }
-                    return board;
-                }
-
-                function isUppercase(char) {
-                    return char == char.toUpperCase();
-                }
-
+                //this.board2.draw(this);
             },
             onAfterRendering: function () {
 
@@ -188,8 +55,14 @@ sap.ui.define([
                 const piecesImages = document.getElementsByClassName("piece");
                 //const piecesImages = document.getElementsByTagName("img");
 
+                // Put view reference in the document
+                document.view = this;
+
+                const aString = "Carlos";
+                const that = this;
+
                 setupBoardSquares();
-                setupPieces();                
+                setupPieces();
 
                 // This function sets up the event listeners and IDs for the squares on the chess board.
                 // It loops through an array of boardSquares and for each square, it adds an event listener for the dragover and drop events,
@@ -214,7 +87,8 @@ sap.ui.define([
                     for (let i = 0; i < pieces.length; i++) {
                         pieces[i].addEventListener("dragstart", drag);
                         pieces[i].setAttribute("draggable", true);
-                        pieces[i].id = pieces[i].className.split(" ")[1] + pieces[i].parentElement.id;
+                        pieces[i].id = `${pieces[i].parentNode.id}--${i}`;
+                        //pieces[i].id = pieces[i].className.split(" ")[1] + pieces[i].parentElement.id;
                     }
                     for (let i = 0; i < pieces.length; i++) {
                         piecesImages[i].setAttribute("draggable", false);
