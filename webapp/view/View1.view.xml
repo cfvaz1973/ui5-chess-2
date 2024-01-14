@@ -9,7 +9,7 @@
         title="{i18n>title}"
     >
         <content>
-            <FlexBox>
+            <FlexBox wrap="Wrap">
             <HBox
                 id="board1"
                 class="chessBoard"
@@ -24,13 +24,28 @@
                 direction="Row"
                 wrap="Wrap"
             />
-            <HBox
+            <!-- <HBox
                 id="board3"
                 class="chessBoard"
                 backgroundDesign="Solid"
                 direction="Row"
                 wrap="Wrap"
             />
+            <HBox
+                id="board4"
+                class="chessBoard"
+                backgroundDesign="Solid"
+                direction="Row"
+                wrap="Wrap"
+            />
+            <HBox
+                id="board5"
+                class="chessBoard"
+                backgroundDesign="Solid"
+                direction="Row"
+                wrap="Wrap"
+            /> -->
+
             </FlexBox>
         </content>
     </Page>
