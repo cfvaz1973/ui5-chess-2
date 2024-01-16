@@ -57,6 +57,11 @@
     height: auto;
 }
 
+
+.drag-over {
+    border: dashed 3px red inset;
+}
+
 /* When the device's screen size is bigger than or equal to 600 pixels,
    the chess board will be 600 pixels wide and 600 pixels tall */
 @media (min-width:600px) {

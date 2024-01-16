@@ -14,7 +14,7 @@ sap.ui.define([
 
             onInit: function () {
 
-                this.boards = [];
+                this.aBoard = [];
 
                 for (let i = 1; i <= 2; i++) {
                     let sBoardId = `board${i}`;
@@ -23,14 +23,16 @@ sap.ui.define([
                         showNotation: true, orientation: 'white',
                         draggable: true
                     });
-                    var obj = { "id": sBoardId,
-                                "board": board };
-                    this.boards.push(obj);
+                    var obj = {
+                        "id": sBoardId,
+                        "board": board
+                    };
+                    this.aBoard.push(obj);
                 }
 
                 // //this.boards[0].sBoardId.draw(this);
-                this.boards[0].board.draw(this);
-                this.boards[1].board.draw(this);
+                this.aBoard[0].board.draw(this);
+                this.aBoard[1].board.draw(this);
 
                 // this.board1 = new Chessboard('board1', {
                 //     position: 'start',
@@ -71,12 +73,10 @@ sap.ui.define([
                 // column + row, where column is a letter from 'a' to 'h' and row is a number from 1 to 8.
                 function setupBoardSquares() {
                     for (let i = 0; i < boardSquares.length; i++) {
-                        boardSquares[i].addEventListener("dragover", allowDrop);
+                        boardSquares[i].addEventListener("dragenter", dragEnter);
+                        boardSquares[i].addEventListener("dragover", dragOver);
+                        boardSquares[i].addEventListener("dragleave", dragLeave);
                         boardSquares[i].addEventListener("drop", drop);
-                        // let row = 8 - Math.floor(i / 8);
-                        // let column = String.fromCharCode(97 + (i % 8));
-                        // let square = boardSquares[i];
-                        // square.id = column + row;
                     }
                 }
 
@@ -95,21 +95,34 @@ sap.ui.define([
                     }
                 }
 
-                function allowDrop(ev) {
+                function dragEnter(ev) {
                     ev.preventDefault();
+                    console.log(`dragEnter: ${ev.target.id}`);
+                    ev.target.classList.add('drag-over');
                 }
 
-                function drag(ev) {
-                    const piece = ev.target;
-                    const pieceColor = piece.getAttribute("color");
-                    if ((isWhiteTurn && pieceColor == "white") || (!isWhiteTurn && pieceColor == "black"))
-                        ev.dataTransfer.setData("text", piece.id);
+                function dragOver(ev) {
+                    ev.preventDefault();
+                    console.log(`dragOver: ${ev.target.id}`);
+                    ev.target.classList.add('drag-over');
+                }
+
+                function dragLeave(ev) {
+                    console.log(`dragLeave: ${ev.target.id}`);
+                    ev.target.classList.remove('drag-over');
                 }
 
                 function drop(ev) {
                     ev.preventDefault();
-                    let data = ev.dataTransfer.getData("text");
-                    if (data === "") return;
+                    ev.target.classList.remove('drag-over');
+
+                    return;
+
+                    ev.preventDefault();
+                    let pieceId = ev.dataTransfer.getData("pieceId");
+                    return;
+
+                    if (pieceId === "") return;
                     const piece = document.getElementById(data);
                     const destinationSquare = ev.currentTarget;
                     let destinationSquareId = destinationSquare.id;
@@ -129,6 +142,37 @@ sap.ui.define([
 
                 }
 
+
+
+
+                function drag(ev) {
+
+                    const square = ev.target;
+
+                    // Decode id to obtain boardId, Square Coordinates, square index
+                    var aRef = square.id.split("--");
+
+                    const [boardId, squareCoords, squareId] = aRef;
+                    // simplification of:
+                    // var boardId = aRef[0];
+                    // var squareCoords = aRef[1];
+                    // var squareId = aRef[2];
+
+                    // Get full view data
+                    var oView = document.view;
+
+                    // Get correct board
+                    var oBoard = getBoardById(oView.aBoard, boardId);
+
+                    // Get data related to board square
+                    var oSquare = oBoard.getSquareData(squareId);
+
+                    if ((oSquare.content.piece !== '') &&
+                        ((oBoard.isWhiteTurn && oSquare.content.color == "white") ||
+                            (!oBoard.isWhiteTurn && oSquare.content.color == "black")))
+                        ev.dataTransfer.setData("pieceId", square.id);
+                }
+
                 function isSquareOccupied(square) {
                     if (square.querySelector(".piece")) {
                         const color = square.querySelector(".piece").getAttribute("color");
@@ -136,6 +180,10 @@ sap.ui.define([
                     } else {
                         return "blank";
                     }
+                }
+
+                function getBoardById(arr, id) {
+                    return arr.find(function (o) { return o.id === id }).board;
                 }
 
                 // alert('onBeforeRendering');

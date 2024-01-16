@@ -41,6 +41,8 @@ sap.ui.define([
 
                 this.aBoard = this.fenToArray(this.fen[this.position]);
 
+                this.isWhiteTurn = true;
+
             },
             fenToArray: function (fen) {
                 let piecesString = fen.split(' ')[0].replace(/\//g, '');
@@ -56,7 +58,7 @@ sap.ui.define([
             loadPositionFromFen: function (fen) {
                 let file = 0;
                 let rank = 7;
-                let board = [];
+                let aBoard = [];
 
                 for (let symbol of fen) {
                     if (symbol == '/') {
@@ -68,33 +70,35 @@ sap.ui.define([
                         } else {
                             let pieceColour = isUppercase(symbol) ? piece.white : piece.black;
                             let pieceType = map_piece[symbol.toLowerCase()];
-                            board[rank * 8 + file] = pieceType | pieceColour;
+                            aBoard[rank * 8 + file] = pieceType | pieceColour;
                             file++;
                         }
                     }
                 }
-                return board;
+                return aBoard;
             },
             draw: function (oView) {
                 var boardId = oView.createId(this.id);
                 var oBoard = oView.byId(boardId);
                 oBoard.data('instance', this);
+
+                // Create Board Squares (all 64)
                 for (let i = 0; i < this.aBoard.length; i++) {
-                    let oPositionData = this.getPositionData(i);
-                    //let squareId = boardId + oPositionData.col + oPositionData.row;
-                    let squareId = `${this.id}--${oPositionData.col}${oPositionData.row}`;
-                    // create square
-                    //let sSquareClass = 'square' + ' ' + oPositionData.color;
-                    let sSquareClass = `square ${oPositionData.color}`;
+                    // get square data (row,col,color,piece)
+                    let oSquareData = this.getSquareData(i);
+                    // define HTML id of the square
+                    let squareId = `${this.id}--${oSquareData.col}${oSquareData.row}`;
+                    // create board square
+                    // define class for board square
+                    let sSquareClass = `square ${oSquareData.color}`;
                     let oSquare = new HBox(squareId, {}).addStyleClass(sSquareClass);
- 
-                    // // add attributes to the square
+
+                    // add attributes to the square
                     // oSquare.data('instance', this);
                     // oSquare.data('index', i);
-                    // oSquare.data('row', oPositionData.row);
-                    // oSquare.data('col', oPositionData.col);
-                    // oSquare.data('color', oPositionData.color);
-
+                    // oSquare.data('row', oSquareData.row);
+                    // oSquare.data('col', oSquareData.col);
+                    // oSquare.data('color', oSquareData.color);
                     // let dataObject = oSquare.data();
                     // console.log(`index:${dataObject.index} row:${dataObject.row} col:${dataObject.col}`);
 
@@ -108,7 +112,10 @@ sap.ui.define([
                 }
                 return oBoard;
             },
-            getPositionData: function (i) {
+            isUppercase: function (symbol) {
+                return symbol == symbol.toUpperCase() ? true : false;
+            },
+            getSquareData: function (i) {
                 // get row and col
                 let row = 8 - Math.floor(i / 8);
                 let col = String.fromCharCode(97 + (i % 8));
@@ -118,11 +125,18 @@ sap.ui.define([
                 let div = Math.floor(i / 8) % 2;
                 let color = mod === div ? "white" : "black";
 
-                // return full object
-                return { "row": row, "col": col, "color": color };
-            },
-            getArrayIndexFromCoordinates: function (sCoords) {
+                var piece = null;
+                const content = this.aBoard[i];
 
+                if (content != null) {
+                    let pieceColor = this.isUppercase(this.aBoard[i]) ? 'white' : 'black';
+                    piece = {
+                        piece: this.aBoard[i],
+                        color: pieceColor
+                    }
+                }
+                // return full object
+                return { "row": row, "col": col, "color": color, "content": piece };
             }
         }
     )
