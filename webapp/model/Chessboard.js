@@ -87,7 +87,7 @@ sap.ui.define([
                     // get square data (row,col,color,piece)
                     let oSquareData = this.getSquareData(i);
                     // define HTML id of the square
-                    let squareId = `${this.id}--${oSquareData.col}${oSquareData.row}`;
+                    let squareId = `${this.id}--${oSquareData.col}${oSquareData.row}--${i}`;
                     // create board square
                     // define class for board square
                     let sSquareClass = `square ${oSquareData.color}`;
@@ -103,11 +103,13 @@ sap.ui.define([
                     // console.log(`index:${dataObject.index} row:${dataObject.row} col:${dataObject.col}`);
 
                     // create piece within square
-                    let sPieceImage = this.piece_url[this.aBoard[i]];
-                    let sImagePath = '../img/' + sPieceImage;
-                    let pieceId = 'piece';
-                    let oPiece = new Image({ src: sImagePath }).addStyleClass("piece");
-                    oSquare.addItem(oPiece);
+                    if (this.aBoard[i]) {
+                        let sPieceImage = this.piece_url[this.aBoard[i]];
+                        let sImagePath = '../img/' + sPieceImage;
+                        let pieceId = 'piece';
+                        let oPiece = new Image({ src: sImagePath }).addStyleClass("piece");
+                        oSquare.addItem(oPiece);
+                    }
                     oBoard.addItem(oSquare);
                 }
                 return oBoard;

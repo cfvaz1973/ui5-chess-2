@@ -17,13 +17,13 @@
                 direction="Row"
                 wrap="Wrap"
             />
-            <HBox
+            <!-- <HBox
                 id="board2"
                 class="chessBoard"
                 backgroundDesign="Solid"
                 direction="Row"
                 wrap="Wrap"
-            />
+            /> -->
             <!-- <HBox
                 id="board3"
                 class="chessBoard"

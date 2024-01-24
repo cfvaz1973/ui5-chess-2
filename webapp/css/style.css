@@ -57,9 +57,12 @@
     height: auto;
 }
 
+.hide {
+    display: none;
+} 
 
 .drag-over {
-    border: dashed 3px red inset;
+    border: dashed 3px red;
 }
 
 /* When the device's screen size is bigger than or equal to 600 pixels,

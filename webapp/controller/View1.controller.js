@@ -30,25 +30,8 @@ sap.ui.define([
                     this.aBoard.push(obj);
                 }
 
-                // //this.boards[0].sBoardId.draw(this);
                 this.aBoard[0].board.draw(this);
-                this.aBoard[1].board.draw(this);
-
-                // this.board1 = new Chessboard('board1', {
-                //     position: 'start',
-                //     showNotation: true, orientation: 'white',
-                //     draggable: true
-                // });
-
-                // this.board1.draw(this);
-
-                // this.board2 = new Chessboard('board2', {
-                //     position: 'start',
-                //     showNotation: true, orientation: 'white',
-                //     draggable: true
-                // });
-
-                //this.board2.draw(this);
+                //this.aBoard[1].board.draw(this);
             },
             onAfterRendering: function () {
 
@@ -58,6 +41,7 @@ sap.ui.define([
                 //const piecesImages = document.getElementsByTagName("img");
 
                 // Put view reference in the document
+                // so data can be acceessed in the 
                 document.view = this;
 
                 const aString = "Carlos";
@@ -73,9 +57,9 @@ sap.ui.define([
                 // column + row, where column is a letter from 'a' to 'h' and row is a number from 1 to 8.
                 function setupBoardSquares() {
                     for (let i = 0; i < boardSquares.length; i++) {
-                        boardSquares[i].addEventListener("dragenter", dragEnter);
-                        boardSquares[i].addEventListener("dragover", dragOver);
-                        boardSquares[i].addEventListener("dragleave", dragLeave);
+                        // boardSquares[i].addEventListener("dragenter", dragEnter);
+                        // boardSquares[i].addEventListener("dragleave", dragLeave);
+                        boardSquares[i].addEventListener("dragover", allowDrop);
                         boardSquares[i].addEventListener("drop", drop);
                     }
                 }
@@ -85,35 +69,42 @@ sap.ui.define([
                 // attribute of each piece tp true, allowing pieces to be dragged.
                 function setupPieces() {
                     for (let i = 0; i < pieces.length; i++) {
-                        pieces[i].addEventListener("dragstart", drag);
-                        pieces[i].setAttribute("draggable", true);
-                        pieces[i].id = `${pieces[i].parentNode.id}--${i}`;
-                        //pieces[i].id = pieces[i].className.split(" ")[1] + pieces[i].parentElement.id;
+                        pieces[i].setAttribute("draggable", false);
                     }
                     for (let i = 0; i < pieces.length; i++) {
-                        piecesImages[i].setAttribute("draggable", false);
+                        piecesImages[i].addEventListener("dragstart", drag);
+                        piecesImages[i].setAttribute("draggable", true);
+                        piecesImages[i].id = `${pieces[i].parentNode.id}--${i}`;
+                        //piecesImages[i].id = `${piecesImages[i].id}--${i}`;
                     }
+                }
+
+                function dragStart(ev) {
+                    ev.dataTransfer.setData('text/plain', ev.target.id);
+                    //ev.target.classList.add('hide');
                 }
 
                 function dragEnter(ev) {
                     ev.preventDefault();
-                    console.log(`dragEnter: ${ev.target.id}`);
+                    //console.log(`dragEnter: ${ev.target.id}`);
                     ev.target.classList.add('drag-over');
                 }
 
-                function dragOver(ev) {
+                function allowDrop(ev) {
                     ev.preventDefault();
                     console.log(`dragOver: ${ev.target.id}`);
                     ev.target.classList.add('drag-over');
                 }
 
                 function dragLeave(ev) {
-                    console.log(`dragLeave: ${ev.target.id}`);
+                    //console.log(`dragLeave: ${ev.target.id}`);
                     ev.target.classList.remove('drag-over');
                 }
 
                 function drop(ev) {
                     ev.preventDefault();
+                    var data = ev.dataTransfer.getData("text");
+                    ev.target.appendChild(document.getElementById(data));
                     ev.target.classList.remove('drag-over');
 
                     return;
@@ -142,10 +133,13 @@ sap.ui.define([
 
                 }
 
-
-
-
                 function drag(ev) {
+
+                    ev.dataTransfer.setData("text", ev.target.id)
+                    return;
+
+
+
 
                     const square = ev.target;
 
