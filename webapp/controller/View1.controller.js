@@ -58,7 +58,7 @@ sap.ui.define([
                 function setupBoardSquares() {
                     for (let i = 0; i < boardSquares.length; i++) {
                         // boardSquares[i].addEventListener("dragenter", dragEnter);
-                        // boardSquares[i].addEventListener("dragleave", dragLeave);
+                        boardSquares[i].addEventListener("dragleave", dragLeave);
                         boardSquares[i].addEventListener("dragover", allowDrop);
                         boardSquares[i].addEventListener("drop", drop);
                     }
@@ -97,7 +97,7 @@ sap.ui.define([
                 }
 
                 function dragLeave(ev) {
-                    //console.log(`dragLeave: ${ev.target.id}`);
+                    console.log(`dragLeave: ${ev.target.id}`);
                     ev.target.classList.remove('drag-over');
                 }
 
@@ -135,12 +135,10 @@ sap.ui.define([
 
                 function drag(ev) {
 
-                    ev.dataTransfer.setData("text", ev.target.id)
+                    ev.dataTransfer.setData("text", ev.target.parentNode.id)
+                    console.log(ev.target);
                     return;
-
-
-
-
+                    
                     const square = ev.target;
 
                     // Decode id to obtain boardId, Square Coordinates, square index
